@@ -1,0 +1,11 @@
+import { LoginForm } from '@/components/login-form'
+
+function App() {
+  return (
+    <main className="flex min-h-svh items-center justify-center bg-background p-6">
+      <LoginForm />
+    </main>
+  )
+}
+
+export default App

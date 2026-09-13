@@ -1,0 +1,37 @@
+name: verify
+
+on:
+  push:
+  pull_request:
+
+# Node / TS quality gate (pnpm). Supply-chain: install from the committed lockfile with
+# --ignore-scripts. For stricter builds, pin each action to a commit SHA.
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: fmt
+        run: pnpm fmt
+      - name: lint
+        run: pnpm lint
+      - name: typecheck
+        run: pnpm typecheck
+      - name: arch
+        run: pnpm arch
+      - name: deadcode
+        run: pnpm deadcode
+      - name: test + coverage
+        run: pnpm coverage
+      - name: build
+        run: pnpm build
+      - name: coverage upload
+        if: ${{ hashFiles('coverage/**') != '' }}
+        uses: codecov/codecov-action@v5
