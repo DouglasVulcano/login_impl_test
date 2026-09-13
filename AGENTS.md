@@ -24,10 +24,28 @@ Todos ligados e verdes. Rode `pnpm <verbo>`. Ordem do gate (mesma do CI):
 - test:      `pnpm test`       # vitest run
 - coverage:  `pnpm coverage`   # vitest run --coverage → lcov (Codecov)
 - build:     `pnpm build`      # tsc -b && vite build
+- e2e:       `pnpm e2e`        # playwright test (fluxo de login)
 - run/dev:   `pnpm dev`        # vite
 
 Notas: Biome só formata (linter desligado; lint fica no oxlint) e ignora `*.css` (sintaxe do
-Tailwind v4). Testes usam jsdom + Testing Library (setup em `src/test/setup.ts`).
+Tailwind v4). Testes unit usam jsdom + Testing Library (setup em `src/test/setup.ts`); E2E usa
+Playwright (config em `playwright.config.ts`, specs em `e2e/`).
+
+## Thresholds & policies (Pilar 3)
+- Diff coverage (Codecov `patch`): **≥ 80%** — required check quando o app Codecov estiver instalado.
+- Coverage de projeto: informativo (foco no diff, não no absoluto).
+- `arch`: qualquer violação **falha o PR**. `deadcode`: **zero deps não usadas**.
+
+## Observability (Pilar 3)
+- `src/observability.ts` (`initObservability()`, chamado em `main.tsx`). **Inerte sem config.**
+- Sentry (erros/perf) liga com `VITE_SENTRY_DSN`. OpenTelemetry Web exporta OTLP para o Collector
+  com `VITE_OTLP_TRACES_ENDPOINT` (nunca apontar direto para o vendor; o Collector faz o fan-out).
+
+## Arsenal (Pilar 4)
+- `.mcp.json` liga **chrome-devtools-mcp** e **shadcn-ui-mcp** (via `npx`, sem segredos).
+- Com chave (adicionar manualmente, nunca commitar a chave): **21st.dev Magic**
+  (`https://21st.dev/api/mcp`, header `x-api-key`). shadcn-ui-mcp aceita `--github-api-key` p/ subir
+  o rate limit de 60→5000/h.
 
 ## Conventions
 - Workflow: Issue-first, PR-driven. Toda tarefa é uma Issue; todo deploy é um PR que a referencia
