@@ -1,0 +1,13 @@
+# Codecov config — diff coverage é o gate obrigatório (foco no diff, não no absoluto).
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true
+    patch:
+      default:
+        target: 80%
+        # 'codecov/patch' vira o required check no ruleset da main (ver AGENTS.md).
+comment: false

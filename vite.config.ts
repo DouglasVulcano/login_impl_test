@@ -17,11 +17,19 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/test/setup.ts',
     css: true,
+    // Só testes unit em src/; os specs de E2E em e2e/ rodam pelo Playwright.
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/components/ui/**', 'src/main.tsx', 'src/test/**', 'src/vite-env.d.ts'],
+      exclude: [
+        'src/components/ui/**',
+        'src/main.tsx',
+        'src/observability.ts',
+        'src/test/**',
+        'src/vite-env.d.ts',
+      ],
     },
   },
 })
