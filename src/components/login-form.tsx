@@ -1,3 +1,4 @@
+import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -15,12 +16,19 @@ import { Label } from '@/components/ui/label'
 export function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState<{ email: string } | null>(null)
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    // Placeholder: aqui entraria a chamada de autenticação real.
-    setSubmitted({ email })
+    setIsSubmitting(true)
+    try {
+      // Placeholder: aqui entraria a chamada de autenticação real.
+      await new Promise((resolve) => setTimeout(resolve, 700))
+      setSubmitted({ email })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -38,6 +46,7 @@ export function LoginForm() {
               type="email"
               placeholder="voce@exemplo.com"
               autoComplete="email"
+              spellCheck={false}
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -64,14 +73,24 @@ export function LoginForm() {
           </div>
 
           {submitted && (
-            <p className="text-sm text-muted-foreground" role="status">
+            <p
+              role="status"
+              className="text-sm text-muted-foreground motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-top-1 motion-safe:duration-200"
+            >
               Formulário enviado para <strong>{submitted.email}</strong> (mock).
             </p>
           )}
         </CardContent>
         <CardFooter className="flex-col gap-3">
-          <Button type="submit" className="w-full">
-            Entrar
+          <Button type="submit" className="w-full" disabled={isSubmitting} aria-busy={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                Entrando…
+              </>
+            ) : (
+              'Entrar'
+            )}
           </Button>
           <p className="text-center text-sm text-muted-foreground">
             Não tem conta?{' '}
